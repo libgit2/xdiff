@@ -5,4 +5,4 @@ project(xdiff VERSION "0.1" LANGUAGES C)
 file(GLOB SRC "*.c" "*.h")
 list(SORT SRC)
 
-add_library(xdiff OBJECT ${SRC})
+add_library(xdiff STATIC ${SRC})
