@@ -1011,6 +1011,7 @@ static void xdl_mark_ignorable_lines(xdchange_t *xscr, xdfenv_t *xe, long flags)
 	}
 }
 
+#if defined(XDL_HAVE_REGEX)
 static int record_matches_regex(xrecord_t *rec, xpparam_t const *xpp) {
 	xdl_regmatch_t regmatch;
 	int i;
@@ -1050,6 +1051,7 @@ static void xdl_mark_ignorable_regex(xdchange_t *xscr, const xdfenv_t *xe,
 		xch->ignore = ignore;
 	}
 }
+#endif // XDL_HAVE_REGEX
 
 int xdl_diff(mmfile_t *mf1, mmfile_t *mf2, xpparam_t const *xpp,
 	     xdemitconf_t const *xecfg, xdemitcb_t *ecb) {
@@ -1071,10 +1073,10 @@ int xdl_diff(mmfile_t *mf1, mmfile_t *mf2, xpparam_t const *xpp,
 	if (xscr) {
 		if (xpp->flags & XDF_IGNORE_BLANK_LINES)
 			xdl_mark_ignorable_lines(xscr, &xe, xpp->flags);
-
+#if defined(XDL_HAVE_REGEX)
 		if (xpp->ignore_regex)
 			xdl_mark_ignorable_regex(xscr, &xe, xpp);
-
+#endif
 		if (ef(&xe, xscr, ecb, xecfg) < 0) {
 
 			xdl_free_script(xscr);

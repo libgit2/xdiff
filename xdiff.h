@@ -83,9 +83,11 @@ typedef struct s_mmbuffer {
 typedef struct s_xpparam {
 	unsigned long flags;
 
+#if defined(XDL_HAVE_REGEX)
 	/* -I<regex> */
 	xdl_regex_t **ignore_regex;
 	size_t ignore_regex_nr;
+#endif
 
 	/* See Documentation/diff-options.txt. */
 	char **anchors;

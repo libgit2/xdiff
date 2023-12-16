@@ -16,7 +16,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <regex.h>
 
 /* Work around C90-conformance issues */
 #if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L)
@@ -47,6 +46,10 @@
 
 #define XDL_BUG(msg) do { fprintf(stderr, "fatal: %s\n", msg); exit(128); } while(0)
 
+#if defined(XDL_HAVE_REGEX)
+
+#include <regex.h>
+
 #define xdl_regex_t regex_t
 #define xdl_regmatch_t regmatch_t
 
@@ -59,5 +62,7 @@ inline int xdl_regexec_buf(
 
     return regexec(preg, buf, nmatch, pmatch, eflags | REG_STARTEND);
 }
+
+#endif // XDL_HAVE_REGEX
 
 #endif
