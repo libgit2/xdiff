@@ -1,9 +1,9 @@
 diff --git a/git-xdiff.h b/git-xdiff.h
 new file mode 100644
-index 0000000..d812d0d
+index 0000000..4091d22
 --- /dev/null
 +++ b/git-xdiff.h
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,79 @@
 +/*
 + * This file provides the necessary indirection between xdiff and
 + * the calling application. Callers can use this file to avoid modifying
@@ -22,7 +22,6 @@ index 0000000..d812d0d
 +#include <stdint.h>
 +#include <stdio.h>
 +#include <string.h>
-+#include <regex.h>
 +
 +/* Work around C90-conformance issues */
 +#if !defined(__STDC_VERSION__) || (__STDC_VERSION__ < 199901L)
@@ -53,8 +52,23 @@ index 0000000..d812d0d
 +
 +#define XDL_BUG(msg) do { fprintf(stderr, "fatal: %s\n", msg); exit(128); } while(0)
 +
-+#define xdl_regex_t regex_t
-+#define xdl_regmatch_t regmatch_t
++#if defined(_MSC_VER) && !defined(XDL_REGEX)
++
++# define xdl_regex_t void *
++# define xdl_regmatch_t void *
++
++inline int xdl_regexec_buf(
++	const xdl_regex_t *preg, const char *buf, size_t size,
++	size_t nmatch, xdl_regmatch_t pmatch[], int eflags)
++{
++    return 15; /* REG_ASSERT */
++}
++
++#else
++# include <regex.h>
++
++# define xdl_regex_t regex_t
++# define xdl_regmatch_t regmatch_t
 +
 +inline int xdl_regexec_buf(
 +	const xdl_regex_t *preg, const char *buf, size_t size,
@@ -65,6 +79,8 @@ index 0000000..d812d0d
 +
 +    return regexec(preg, buf, nmatch, pmatch, eflags | REG_STARTEND);
 +}
++
++#endif /* XDL_NO_REGEX */
 +
 +#endif
 diff --git a/xdiff.h b/xdiff.h
@@ -197,3 +213,25 @@ index a4285ac..75db1d8 100644
  #include "xmacros.h"
  #include "xdiff.h"
  #include "xtypes.h"
+diff --git a/xmerge.c b/xmerge.c
+index af40c88..6ebf73a 100644
+--- a/xmerge.c
++++ b/xmerge.c
+@@ -88,7 +88,7 @@ static int xdl_cleanup_merge(xdmerge_t *c)
+ 		if (c->mode == 0)
+ 			count++;
+ 		next_c = c->next;
+-		free(c);
++		xdl_free(c);
+ 	}
+ 	return count;
+ }
+@@ -456,7 +456,7 @@ static void xdl_merge_two_conflicts(xdmerge_t *m)
+ 	m->chg1 = next_m->i1 + next_m->chg1 - m->i1;
+ 	m->chg2 = next_m->i2 + next_m->chg2 - m->i2;
+ 	m->next = next_m->next;
+-	free(next_m);
++	xdl_free(next_m);
+ }
+ 
+ /*
