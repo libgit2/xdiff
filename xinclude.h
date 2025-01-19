@@ -24,6 +24,9 @@
 #define XINCLUDE_H
 
 #include "git-xdiff.h"
+
+#define DISABLE_SIGN_COMPARE_WARNINGS
+
 #include "xmacros.h"
 #include "xdiff.h"
 #include "xtypes.h"

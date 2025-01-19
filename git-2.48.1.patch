@@ -118,10 +118,10 @@ index bb56b23..fb47f63 100644
  long xdl_mmfile_size(mmfile_t *mmf);
  
 diff --git a/xdiffi.c b/xdiffi.c
-index 344c2df..ea36143 100644
+index 4685ba6..7224739 100644
 --- a/xdiffi.c
 +++ b/xdiffi.c
-@@ -833,7 +833,7 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
+@@ -834,7 +834,7 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
  			/* Shift the group backward as much as possible: */
  			while (!group_slide_up(xdf, &g))
  				if (group_previous(xdfo, &go))
@@ -130,7 +130,7 @@ index 344c2df..ea36143 100644
  
  			/*
  			 * This is this highest that this group can be shifted.
-@@ -849,7 +849,7 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
+@@ -850,7 +850,7 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
  				if (group_slide_down(xdf, &g))
  					break;
  				if (group_next(xdfo, &go))
@@ -139,7 +139,7 @@ index 344c2df..ea36143 100644
  
  				if (go.end > go.start)
  					end_matching_other = g.end;
-@@ -874,9 +874,9 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
+@@ -875,9 +875,9 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
  			 */
  			while (go.end == go.start) {
  				if (group_slide_up(xdf, &g))
@@ -151,7 +151,7 @@ index 344c2df..ea36143 100644
  			}
  		} else if (flags & XDF_INDENT_HEURISTIC) {
  			/*
-@@ -917,9 +917,9 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
+@@ -918,9 +918,9 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
  
  			while (g.end > best_shift) {
  				if (group_slide_up(xdf, &g))
@@ -163,7 +163,7 @@ index 344c2df..ea36143 100644
  			}
  		}
  
-@@ -928,11 +928,11 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
+@@ -929,11 +929,11 @@ int xdl_change_compact(xdfile_t *xdf, xdfile_t *xdfo, long flags) {
  		if (group_next(xdf, &g))
  			break;
  		if (group_next(xdfo, &go))
@@ -177,7 +177,7 @@ index 344c2df..ea36143 100644
  
  	return 0;
  }
-@@ -973,7 +973,7 @@ void xdl_free_script(xdchange_t *xscr) {
+@@ -974,7 +974,7 @@ void xdl_free_script(xdchange_t *xscr) {
  	}
  }
  
@@ -186,7 +186,7 @@ index 344c2df..ea36143 100644
  			      xdemitconf_t const *xecfg)
  {
  	xdchange_t *xch, *xche;
-@@ -1012,11 +1012,11 @@ static void xdl_mark_ignorable_lines(xdchange_t *xscr, xdfenv_t *xe, long flags)
+@@ -1013,11 +1013,11 @@ static void xdl_mark_ignorable_lines(xdchange_t *xscr, xdfenv_t *xe, long flags)
  }
  
  static int record_matches_regex(xrecord_t *rec, xpparam_t const *xpp) {
@@ -201,15 +201,18 @@ index 344c2df..ea36143 100644
  			return 1;
  
 diff --git a/xinclude.h b/xinclude.h
-index a4285ac..75db1d8 100644
+index 7e56542..5163346 100644
 --- a/xinclude.h
 +++ b/xinclude.h
-@@ -23,7 +23,7 @@
+@@ -23,9 +23,10 @@
  #if !defined(XINCLUDE_H)
  #define XINCLUDE_H
  
--#include "git-compat-util.h"
 +#include "git-xdiff.h"
++
+ #define DISABLE_SIGN_COMPARE_WARNINGS
+ 
+-#include "git-compat-util.h"
  #include "xmacros.h"
  #include "xdiff.h"
  #include "xtypes.h"
